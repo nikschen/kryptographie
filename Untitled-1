@@ -1,0 +1,28 @@
+#include <iostream> 
+
+
+
+int bbs(int _p, int _q, int _s)
+{
+    
+    int n=_p*_q;
+    int x0=_s*_s%n;
+    int xI=(x0-1)*(x0-1);
+    int bI=xI%2;
+    for(int i=0;i<10;i++)
+    {
+        std::cout<<"bI="<<bI<<std::endl;
+        xI=(xI-1)*(xI-1);
+        bI=xI%2;
+    }
+
+}
+
+int main()
+{
+    int p=7;
+    int q=19;
+    int s=2;
+    bbs(p,q,s);
+    return 0;
+}
