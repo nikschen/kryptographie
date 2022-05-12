@@ -6,6 +6,13 @@ using std::string;
 using std::cout;
 using std::endl;
 
+int currentRound = 0;
+
+int shiftingDistance[16] =
+{
+	1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1
+};
+
 #pragma region Boxes
 
 
@@ -127,6 +134,18 @@ int substitionBoxes[8][4][16] =
 };
 #pragma endregion
 
+void output(string _outputString)
+{
+	string output = "";
+	for (int i = 0; i < _outputString.length(); i++)
+	{
+		if (i % 8 == 0)output += " ";
+		output += _outputString[i];
+	}
+
+	cout << output << endl;
+}
+
 string inputPermutation(string _testVectorX64)
 {
 	string resultVector64 = "";
@@ -145,7 +164,7 @@ string endPermutation(string _testVectorX64)
 	}
 	return resultVector64;
 }
-void splitInLAndR(string _testVectorX64, string* _ptestVectorL32, string* _ptestVectorR32)
+void splitInLAndR32(string _testVectorX64, string* _ptestVectorL32, string* _ptestVectorR32)
 {
 	*_ptestVectorL32 = _testVectorX64.substr(0,32);
 	*_ptestVectorR32 = _testVectorX64.substr(32,32);
@@ -169,33 +188,86 @@ string expansionPermutation(string _vectorR32)
 	}
 	return resultVector;
 }
-string key64Permutation(string _key64)
+string key56Permutation(string _key64)
 {
 	string resultKey = "";
 	for (int idx = 0; idx < 56; idx++)
 	{
 		resultKey += _key64[ keyPermutation[idx]-1];
 	}
-
+	//output(resultKey);
 	return resultKey;
 }
-void splitKey(string _key64, string* _pLeftKey28, string* _pRightKey28)
+void splitKey(string _key56, string* _pLeftKeyHalf28, string* _pRightKeyHalf28)
 {
-	*_pLeftKey28 = _key64.substr(0, 28);
-	*_pRightKey28 = _key64.substr(28, 28);
+	*_pLeftKeyHalf28 = _key56.substr(0, 28);
+	*_pRightKeyHalf28 = _key56.substr(28, 28);
 }
+
+void keyShift(string* _key28)
+{
+	string oldKey = *_key28;
+	string newKey = "";
+	for (int i = 0; i < oldKey.length(); i++)
+	{
+		int idxInOldKey = i + shiftingDistance[currentRound];
+		if (idxInOldKey >= oldKey.length())
+		{
+			idxInOldKey= idxInOldKey-oldKey.length();
+		}
+		newKey += oldKey[idxInOldKey];
+	}
+	cout << "oldKey";
+	output(oldKey);
+	cout << "newKey";
+	output(newKey);
+	*_key28 = newKey;
+	
+}
+
+void shiftKeys(string* _pLeftKeyHalf28, string* _pRightKeyHalf28)
+{
+	keyShift(_pLeftKeyHalf28);
+	keyShift(_pRightKeyHalf28);
+	currentRound += 1;
+}
+
+string compressionPermutation48(string* _pLeftKeyHalf28, string* _pRightKeyHalf28)
+{
+	string wholeKey = *_pLeftKeyHalf28 + *_pRightKeyHalf28;
+	output(wholeKey);
+	string newKey = "";
+	for (int idx = 0; idx < 48; idx++)
+	{
+		newKey += wholeKey[keyCompression[idx]-1];
+	}
+	output(newKey);
+
+	return newKey;
+}
+
+
 
 int main()
 {
-
-	//cout<<inputPermutation(input64)<<std::endl;
+	
+	//output(inputPermutation(input64));
 	string test= inputPermutation(input64);
 	string leftVector;
 	string rightVector;
-	splitInLAndR(test, &leftVector, &rightVector);
+	splitInLAndR32(test, &leftVector, &rightVector);
 	//cout << leftVector << " " << rightVector << std::endl;
 	//cout << " 0000   0001   0010   0011   0100   0101   0110   0111" << endl;
 	//cout << expansionPermutation("00000001001000110100010101100111") << endl;
-	cout << key64Permutation(key64) << endl;
+	//cout << key64Permutation(key64) << endl;
+	string permutatedKey56 = key56Permutation(key64);
+	string leftKeyHalf28 = "";
+	string rightKeyHalf28 = "";
+	splitKey(permutatedKey56, &leftKeyHalf28, &rightKeyHalf28);
+	for (int i = 0; i < 16; i++)
+	{
+		shiftKeys(&leftKeyHalf28, &rightKeyHalf28);
+		compressionPermutation48(&leftKeyHalf28, &rightKeyHalf28);
+	}
 	return 0;
 }
