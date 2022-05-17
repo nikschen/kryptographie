@@ -1,8 +1,10 @@
+#include <bitset>
 #include <iostream>
 #include <string>
 
 
 using std::string; 
+using std::to_string;
 using std::cout;
 using std::endl;
 
@@ -169,24 +171,25 @@ void splitInLAndR32(string _testVectorX64, string* _ptestVectorL32, string* _pte
 	*_ptestVectorL32 = _testVectorX64.substr(0,32);
 	*_ptestVectorR32 = _testVectorX64.substr(32,32);
 }
-string expansionPermutation(string _vectorR32)
+void expansionPermutation(string* _vectorR32)
 {
 	string resultVector = "";
 	string fourBitBlocks[8];
+	string rightVector = *_vectorR32;
 	for (int idx=0; idx<8;idx++)
 	{
-		fourBitBlocks[idx] = _vectorR32.substr(idx * 4, 4);
+		fourBitBlocks[idx] = rightVector.substr(idx * 4, 4);
 		int leftNeighbourIdx = idx * 4 - 1;
 		int rightNeighbourIdx = idx * 4 + 4;
 		if (leftNeighbourIdx < 0) leftNeighbourIdx = 31;
 		if (rightNeighbourIdx > 31) rightNeighbourIdx = 0;
-		fourBitBlocks[idx] = _vectorR32[leftNeighbourIdx] + fourBitBlocks[idx] + _vectorR32[rightNeighbourIdx];
+		fourBitBlocks[idx] = rightVector[leftNeighbourIdx] + fourBitBlocks[idx] + rightVector[rightNeighbourIdx];
 	}
 	for (string block : fourBitBlocks)
 	{
 		resultVector += block+" ";
 	}
-	return resultVector;
+	*_vectorR32=resultVector;
 }
 string key56Permutation(string _key64)
 {
@@ -246,7 +249,80 @@ string compressionPermutation48(string* _pLeftKeyHalf28, string* _pRightKeyHalf2
 	return newKey;
 }
 
+void linkKeyWithRightHalfViaXOR(string* _rightVector32, string _leftKeyHalf28, string _rightKeyHalf28)
+{
+	string result = "";
+	string key = _leftKeyHalf28 + _rightKeyHalf28;
+	string rightVectorOld = *_rightVector32;
+	for (int i=0;i<32;i++)
+	{
+		if (rightVectorOld[i] == key[i]) result += '0';
+		else result += '1';
+	}
+	*_rightVector32 = result;
+}
 
+string linkVectorsViaXOR(string leftVector, string rightVector)
+{
+	string result = "";
+	for (int i = 0; i < 32; i++)
+	{
+		if (leftVector[i] == rightVector[i]) result += '0';
+		else result += '1';
+	}
+
+	return result;
+}
+
+void splitInto6BitGroups(string _input48, string* _6BitBlockArray)
+{
+	for (int i = 0; i < 8; i++)
+	{
+		_6BitBlockArray[i] = _input48.substr(i*6, 6);
+	}
+}
+
+string decToBin(int _dec)
+{
+	return std::bitset<4>(_dec).to_string();
+}
+
+int binToDec(string _bin)
+{
+	return std::stoi(_bin, nullptr, 10);
+}
+
+void sBoxSubstitution(string* _vectorR48)
+{
+	string _6BitBlocks[8];
+	string result32 = "";
+	splitInto6BitGroups(*_vectorR48, _6BitBlocks);
+	for (int i = 0; i < 8; i++)
+	{
+		string currentBitBlock = _6BitBlocks[i];
+		string rowBinary = "";
+		string colBinary = "";
+		rowBinary += currentBitBlock[0] + currentBitBlock[5];
+		colBinary += currentBitBlock.substr(1,4);
+		int row = binToDec(rowBinary);
+		int col = binToDec(colBinary);
+		result32 += decToBin(substitionBoxes[i][row][col]);
+	}
+
+	*_vectorR48 = result32;
+}
+
+void permutationPBox(string* _vectorR32)
+{
+	string oldVectorR = *_vectorR32;
+	string newVectorR = "";
+	for (int i = 0; i < 32; i++)
+	{
+		newVectorR += oldVectorR[pBoxPermutation[i] - 1];
+	}
+
+	*_vectorR32 = newVectorR;
+}
 
 int main()
 {
@@ -256,18 +332,34 @@ int main()
 	string leftVector;
 	string rightVector;
 	splitInLAndR32(test, &leftVector, &rightVector);
-	//cout << leftVector << " " << rightVector << std::endl;
-	//cout << " 0000   0001   0010   0011   0100   0101   0110   0111" << endl;
-	//cout << expansionPermutation("00000001001000110100010101100111") << endl;
-	//cout << key64Permutation(key64) << endl;
+
+
 	string permutatedKey56 = key56Permutation(key64);
 	string leftKeyHalf28 = "";
 	string rightKeyHalf28 = "";
 	splitKey(permutatedKey56, &leftKeyHalf28, &rightKeyHalf28);
+
+
 	for (int i = 0; i < 16; i++)
 	{
+		if (i != 0)
+		{
+			string leftVectorTemp = rightVector;
+			rightVector = linkVectorsViaXOR(leftVector, rightVector);
+			leftVector = leftVectorTemp;
+		}
+
 		shiftKeys(&leftKeyHalf28, &rightKeyHalf28);
 		compressionPermutation48(&leftKeyHalf28, &rightKeyHalf28);
+		expansionPermutation(&rightVector);
+		linkKeyWithRightHalfViaXOR(&rightVector, leftKeyHalf28, rightKeyHalf28);
+		sBoxSubstitution(&rightVector);
+		permutationPBox(&rightVector);
+		cout << leftVector << endl;
+		cout << rightVector << endl;
 	}
+
+	cout << endPermutation(leftVector + rightVector) <<endl;
+
 	return 0;
 }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "einfacher ggT (Euklid)", "Kryptographie\Kryptographie.vcxproj", "{D097CB44-5CEA-40D9-90D6-4EFD1E3E01EC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "einfacher ggT (Euklid)", "einfacher ggT\einfacher ggT.vcxproj", "{D097CB44-5CEA-40D9-90D6-4EFD1E3E01EC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "erweiterter ggT (Euklid)", "erweiterter ggT (Euklid)\erweiterter ggT (Euklid).vcxproj", "{7B2E7D2A-01E9-4D3E-9C89-02C973442794}"
 EndProject
