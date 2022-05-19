@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <bitset>
 
@@ -53,6 +53,7 @@ int advancedGGT(int _a0, int _a1)
 	return xIMinus1;
 }
 
+//get e with formula e ∈ N with ggT (e, φ(n)) = 1
 int getE(int _phi)
 {
 	int e = 3;
@@ -70,6 +71,7 @@ string decToBin(int _dec)
 	return binary;
 }
 
+//Q if binary 0, QM if binary 1 => Q ==Square M==Multiply
 long squareAndMultiply(int _base, int _exponent, int _mod)
 {
 	string binaryExp = decToBin(_exponent);
@@ -100,6 +102,7 @@ int main()
 	int M = 212;
 	int C = 0;
 
+	//example 1
 	//int p = 11;
 	//int q = 13;
 	//int n = 143;
@@ -109,6 +112,7 @@ int main()
 	//int M = 15;
 	//int C = 115;
 
+	//example 2
 	//int p = 23;
 	//int q = 67;
 	//int n = 1541;
