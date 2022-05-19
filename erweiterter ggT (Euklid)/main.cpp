@@ -1,6 +1,6 @@
 #include <iostream>
 
-void advancedEuklid(int _a0, int _a1)
+int advancedEuklid(int _a0, int _a1)
 {
 	int xIMinus1 = 1;
 	int xI = 0;
@@ -29,6 +29,8 @@ void advancedEuklid(int _a0, int _a1)
 	} while (aI != 0);
 
 	std::cout<<"aN-1=" << aIMinus1 << "\nxN-1=" << xIMinus1 << "\nyN-1=" << yIMinus1 << std::endl;
+
+	return aIMinus1;
 }
 
 int main()
