@@ -136,7 +136,7 @@ int substitionBoxes[8][4][16] =
 };
 #pragma endregion
 
-void output(string _outputString)
+void output(string _variableName, string _outputString)
 {
 	string output = "";
 	for (int i = 0; i < _outputString.length(); i++)
@@ -145,7 +145,7 @@ void output(string _outputString)
 		output += _outputString[i];
 	}
 
-	cout << output << endl;
+	cout << _variableName << ": " << output << endl;
 }
 
 string inputPermutation(string _testVectorX64)
@@ -187,7 +187,7 @@ void expansionPermutation(string* _vectorR32)
 	}
 	for (string block : fourBitBlocks)
 	{
-		resultVector += block+" ";
+		resultVector += block;
 	}
 	*_vectorR32=resultVector;
 }
@@ -198,7 +198,7 @@ string key56Permutation(string _key64)
 	{
 		resultKey += _key64[ keyPermutation[idx]-1];
 	}
-	//output(resultKey);
+	//output("key56PermutationResult",resultKey);
 	return resultKey;
 }
 void splitKey(string _key56, string* _pLeftKeyHalf28, string* _pRightKeyHalf28)
@@ -220,10 +220,8 @@ void keyShift(string* _key28)
 		}
 		newKey += oldKey[idxInOldKey];
 	}
-	cout << "oldKey";
-	output(oldKey);
-	cout << "newKey";
-	output(newKey);
+	//output("KeyBeforeShift",oldKey);
+	//output("KeyAfterShift",newKey);
 	*_key28 = newKey;
 	
 }
@@ -235,31 +233,30 @@ void shiftKeys(string* _pLeftKeyHalf28, string* _pRightKeyHalf28)
 	currentRound += 1;
 }
 
-string compressionPermutation48(string* _pLeftKeyHalf28, string* _pRightKeyHalf28)
+string keyCompressionPermutation48(string* _pLeftKeyHalf28, string* _pRightKeyHalf28)
 {
 	string wholeKey = *_pLeftKeyHalf28 + *_pRightKeyHalf28;
-	output(wholeKey);
+	output("whole key",wholeKey);
 	string newKey = "";
 	for (int idx = 0; idx < 48; idx++)
 	{
 		newKey += wholeKey[keyCompression[idx]-1];
 	}
-	output(newKey);
+	//output("keyCompressionResult",newKey);
 
 	return newKey;
 }
 
-void linkKeyWithRightHalfViaXOR(string* _rightVector32, string _leftKeyHalf28, string _rightKeyHalf28)
+void linkKeyWithRightHalfViaXOR(string* _rightVector48, string _currentKey)
 {
 	string result = "";
-	string key = _leftKeyHalf28 + _rightKeyHalf28;
-	string rightVectorOld = *_rightVector32;
-	for (int i=0;i<32;i++)
+	string rightVectorOld = *_rightVector48;
+	for (int i=0;i<48;i++)
 	{
-		if (rightVectorOld[i] == key[i]) result += '0';
+		if (rightVectorOld[i] == _currentKey[i]) result += '0';
 		else result += '1';
 	}
-	*_rightVector32 = result;
+	*_rightVector48 = result;
 }
 
 string linkVectorsViaXOR(string leftVector, string rightVector)
@@ -276,10 +273,12 @@ string linkVectorsViaXOR(string leftVector, string rightVector)
 
 void splitInto6BitGroups(string _input48, string* _6BitBlockArray)
 {
+
 	for (int i = 0; i < 8; i++)
 	{
 		_6BitBlockArray[i] = _input48.substr(i*6, 6);
 	}
+
 }
 
 string decToBin(int _dec)
@@ -302,7 +301,8 @@ void sBoxSubstitution(string* _vectorR48)
 		string currentBitBlock = _6BitBlocks[i];
 		string rowBinary = "";
 		string colBinary = "";
-		rowBinary += currentBitBlock[0] + currentBitBlock[5];
+		rowBinary += currentBitBlock[0];
+		rowBinary += currentBitBlock[5];
 		colBinary += currentBitBlock.substr(1,4);
 		int row = binToDec(rowBinary);
 		int col = binToDec(colBinary);
@@ -350,16 +350,16 @@ int main()
 		}
 
 		shiftKeys(&leftKeyHalf28, &rightKeyHalf28);
-		compressionPermutation48(&leftKeyHalf28, &rightKeyHalf28);
+		string currentKey=keyCompressionPermutation48(&leftKeyHalf28, &rightKeyHalf28);
 		expansionPermutation(&rightVector);
-		linkKeyWithRightHalfViaXOR(&rightVector, leftKeyHalf28, rightKeyHalf28);
+		linkKeyWithRightHalfViaXOR(&rightVector, currentKey);
 		sBoxSubstitution(&rightVector);
 		permutationPBox(&rightVector);
-		cout << leftVector << endl;
-		cout << rightVector << endl;
+		//output("leftVector",leftVector);
+		//output("rightVector",rightVector);
 	}
 
-	cout << endPermutation(leftVector + rightVector) <<endl;
+	output("endResult",endPermutation(leftVector + rightVector));
 
 	return 0;
 }
