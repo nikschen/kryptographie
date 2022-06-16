@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RSA", "RSA\RSA.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Chaum-van Heijst-Pfitzmann", "Chaum-van Heijst-Pfitzmann\Chaum-van Heijst-Pfitzmann.vcxproj", "{DC0122DE-61AC-4E04-A621-903D59AAFCD9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Elliptische Kurven", "Elliptische Kurven\Elliptische Kurven.vcxproj", "{30FC7DF3-69DE-4E7C-881E-93243177703A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -91,6 +93,14 @@ Global
 		{DC0122DE-61AC-4E04-A621-903D59AAFCD9}.Release|x64.Build.0 = Release|x64
 		{DC0122DE-61AC-4E04-A621-903D59AAFCD9}.Release|x86.ActiveCfg = Release|Win32
 		{DC0122DE-61AC-4E04-A621-903D59AAFCD9}.Release|x86.Build.0 = Release|Win32
+		{30FC7DF3-69DE-4E7C-881E-93243177703A}.Debug|x64.ActiveCfg = Debug|x64
+		{30FC7DF3-69DE-4E7C-881E-93243177703A}.Debug|x64.Build.0 = Debug|x64
+		{30FC7DF3-69DE-4E7C-881E-93243177703A}.Debug|x86.ActiveCfg = Debug|Win32
+		{30FC7DF3-69DE-4E7C-881E-93243177703A}.Debug|x86.Build.0 = Debug|Win32
+		{30FC7DF3-69DE-4E7C-881E-93243177703A}.Release|x64.ActiveCfg = Release|x64
+		{30FC7DF3-69DE-4E7C-881E-93243177703A}.Release|x64.Build.0 = Release|x64
+		{30FC7DF3-69DE-4E7C-881E-93243177703A}.Release|x86.ActiveCfg = Release|Win32
+		{30FC7DF3-69DE-4E7C-881E-93243177703A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
