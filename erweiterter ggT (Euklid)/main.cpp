@@ -28,9 +28,9 @@ int advancedEuklid(int _a0, int _a1)
 		
 	} while (aI != 0);
 
-	std::cout<<"aN-1=" << aIMinus1 << "\nxN-1=" << xIMinus1 << "\nyN-1=" << yIMinus1 << std::endl;
+	//std::cout<<"aN-1=" << aIMinus1 << "\nxN-1=" << xIMinus1 << "\nyN-1=" << yIMinus1 << std::endl;
 
-	return aIMinus1;
+	return xIMinus1;
 }
 
 int main()
