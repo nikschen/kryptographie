@@ -12,18 +12,18 @@ using std::cout;
 using std::endl;
 using std::string;
 
-string decToBin(int _dec)
+string decToBin(long long _dec)
 {
-	string binary = std::bitset<16>(_dec).to_string();
+	string binary = std::bitset<32>(_dec).to_string();
 	binary.erase(0, binary.find_first_not_of('0'));
 	return binary;
 }
 
-long squareAndMultiply(int _base, int _exponent, int _mod)
+long long squareAndMultiply(long long _base, long long _exponent, long long _mod)
 {
 	string binaryExp = decToBin(_exponent);
 	string commandChain = "";
-	long result = 1;
+	long long result = 1;
 	for (char c : binaryExp)
 	{
 		if (c == '1') commandChain += "QM";
@@ -38,13 +38,13 @@ long squareAndMultiply(int _base, int _exponent, int _mod)
 	return result;
 }
 
-bool millerRabin(int _s,int _n, int _d, int _x0)
+bool millerRabin(long long _s,long long _n, long long _d, long long _x0)
 {
 	
-	int xi = 0;
-	int xIMinus1 = _x0;
+	long long xi = 0;
+	long long xIMinus1 = _x0;
 
-	for (int i = 1; i <= _s; i++)
+	for (long long i = 1; i <= _s; i++)
 	{
 		xi = (xIMinus1 * xIMinus1) % _n;
 		if (xi == 1 && xIMinus1 != 1 && xIMinus1 != (_n - 1)) return true;
@@ -59,12 +59,12 @@ int main()
 {
 	srand(time(NULL));
 	
-	int a = 0;
-	int d = 0;
-	int n = 11;
-	int k = 5;
-	int s = 0;
-	int x0 = 0;
+	long long a = 0;
+	long long d = 0;
+	long long n = 11;
+	long long k = 5;
+	long long s = 0;
+	long long x0 = 0;
 	
 	bool isPrime = false; 
 	
@@ -80,13 +80,13 @@ int main()
 		s++;
 	}
 
-	for (int i = 0; i < k; i++)
+	for (long long i = 0; i < k; i++)
 	{
 		while (a < 2)
 		{
 			a = rand() % (n - 2);
 		}
-		x0 = (int) squareAndMultiply(a, d, n) % n;
+		x0 = squareAndMultiply(a, d, n) % n;
 		isPrime = !millerRabin(s, n, d, x0);
 		if (!isPrime) break;
 	}
